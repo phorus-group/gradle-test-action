@@ -1,0 +1,84 @@
+name: Gradle Test Action
+description: A GitHub Action to test a gradle project
+
+inputs:
+  java-version:
+    description: "Java version to use"
+    required: false
+    default: "21"
+  java-distribution:
+    description: "Java distribution to use"
+    required: false
+    default: "temurin"
+  gradle-version:
+    description: "Gradle version to use"
+    required: false
+    default: "8.5"
+  commands:
+    description: "The gradle commands to run"
+    required: false
+    default: "check unitTest -x test"
+  jacoco-csv-location:
+    description: "Location of Jacoco CSV report"
+    required: false
+    default: "./build/reports/jacoco/test/jacocoTestReport.csv"
+outputs:
+  total-lines:
+    description: "Total lines to cover with tests"
+    value: ${{ steps.build-and-test.outputs.total-lines }}
+  lines-covered:
+    description: "Total lines to covered with tests"
+    value: ${{ steps.build-and-test.outputs.lines-covered }}
+  coverage-percentage:
+    description: "The coverage percentage"
+    value: ${{ steps.build-and-test.outputs.coverage-percentage }}
+
+runs:
+  using: composite
+  steps:
+    - name: Download build artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: gradle-build
+
+    - name: "Setup Java"
+      uses: actions/setup-java@v4
+      with:
+        distribution: ${{ inputs.java-distribution }}
+        java-version: ${{ inputs.java-version }}
+
+    - name: "Setup Gradle"
+      uses: gradle/actions/setup-gradle@v4
+      with:
+        gradle-version: ${{ inputs.gradle-version }}
+
+    - name: "Run tests"
+      id: test
+      shell: bash
+      run: |
+        ./gradlew --build-cache ${{ inputs.commands }}
+
+    - name: "Report coverage"
+      id: report-coverage
+      shell: bash
+      run: |
+        if [ -f ${{ inputs.jacoco-csv-location }} ]; then
+          awk -F "," '{ instructions += $4 + $5; covered += $5 } END { print covered, "/", instructions, " instructions covered"; print 100*covered/instructions, "% covered" }' ${{ inputs.jacoco-csv-location }}
+          echo "total-lines=$(awk -F "," '{ instructions += $4 + $5 } END { print instructions }' ${{ inputs.jacoco-csv-location }})" >> "$GITHUB_OUTPUT"
+          echo "lines-covered=$(awk -F "," '{ covered += $5 } END { print covered }' ${{ inputs.jacoco-csv-location }})" >> "$GITHUB_OUTPUT"
+          echo "coverage-percentage=$(awk -F "," '{ instructions += $4 + $5; covered += $5 } END { print 100*covered/instructions }' ${{ inputs.jacoco-csv-location }})" >> "$GITHUB_OUTPUT"
+        else
+          echo -e "\e[33mJacoco CSV coverage report not found!\e[0m"
+        fi
+
+    - name: "Report test summary"
+      uses: test-summary/action@v2
+      with:
+        paths: "build/test-results/test/*.xml"
+
+    - name: "Upload test artifacts"
+      uses: actions/upload-artifact@master
+      with:
+        name: gradle-tests
+        retention-days: 2
+        path: build/jacoco
