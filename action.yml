@@ -10,10 +10,6 @@ inputs:
     description: "Java distribution to use"
     required: false
     default: "temurin"
-  gradle-version:
-    description: "Gradle version to use"
-    required: false
-    default: "8.5"
   commands:
     description: "The gradle commands to run"
     required: false
@@ -40,21 +36,16 @@ outputs:
 runs:
   using: composite
   steps:
-    # - name: Download build artifacts
-    #   uses: actions/download-artifact@v4
-    #   with:
-    #     name: gradle-build
+    - name: Download build artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: gradle-build
 
     - name: "Setup Java"
       uses: actions/setup-java@v4
       with:
         distribution: ${{ inputs.java-distribution }}
         java-version: ${{ inputs.java-version }}
-
-    - name: "Setup Gradle"
-      uses: gradle/actions/setup-gradle@v4
-      with:
-        gradle-version: ${{ inputs.gradle-version }}
 
     - name: "Run tests"
       id: test
