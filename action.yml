@@ -84,6 +84,8 @@ runs:
       uses: actions/upload-artifact@master
       with:
         name: gradle-tests-${{ inputs.artifact-suffix }}
+        include-hidden-files: true
         retention-days: 2
         path: |
           ./build/jacoco
+          .gitignore
