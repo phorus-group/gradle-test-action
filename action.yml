@@ -87,5 +87,4 @@ runs:
         include-hidden-files: true
         retention-days: 2
         path: |
-          ./build/jacoco
-          .gitignore
+          ./build/jacoco/*.exec
