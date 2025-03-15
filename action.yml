@@ -40,10 +40,10 @@ outputs:
 runs:
   using: composite
   steps:
-    - name: Download build artifacts
-      uses: actions/download-artifact@v4
-      with:
-        name: gradle-build
+    # - name: Download build artifacts
+    #   uses: actions/download-artifact@v4
+    #   with:
+    #     name: gradle-build
 
     - name: "Setup Java"
       uses: actions/setup-java@v4
@@ -84,7 +84,6 @@ runs:
       uses: actions/upload-artifact@master
       with:
         name: gradle-tests-${{ inputs.artifact-suffix }}
-        include-hidden-files: true
         retention-days: 2
         path: |
           ./build/jacoco/*.exec
