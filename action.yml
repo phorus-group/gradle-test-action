@@ -74,6 +74,7 @@ runs:
         else
           echo -e "\e[33mJacoco CSV coverage report not found!\e[0m"
         fi
+        exit 1
 
     - name: "Report test summary"
       uses: test-summary/action@v2
