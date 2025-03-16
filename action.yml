@@ -46,11 +46,13 @@ runs:
       with:
         distribution: ${{ inputs.java-distribution }}
         java-version: ${{ inputs.java-version }}
+        cache: gradle
 
     - name: "Run tests"
       id: test
       shell: bash
       run: |
+        export GRADLE_USER_HOME=`pwd`/.gradle
         ./gradlew --build-cache ${{ inputs.commands }}
 
     - name: "Report coverage"
