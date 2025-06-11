@@ -13,7 +13,7 @@ inputs:
   commands:
     description: "The gradle commands to run"
     required: false
-    default: "check unitTest -x test"
+    default: "check"
   jacoco-csv-location:
     description: "Location of Jacoco CSV report"
     required: false
