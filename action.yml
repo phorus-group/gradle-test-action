@@ -70,7 +70,7 @@ runs:
     - name: "Report test summary"
       uses: test-summary/action@v2
       with:
-        paths: "build/test-results/**/*.xml"
+        paths: "**/test-results/**/*.xml"
 
     - name: "Upload test artifacts"
       uses: actions/upload-artifact@master
@@ -78,4 +78,4 @@ runs:
         name: gradle-tests-${{ inputs.artifact-suffix }}
         retention-days: 2
         path: |
-          ./build/jacoco/*.exec
+          **/build/jacoco/*.exec
