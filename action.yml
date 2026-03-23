@@ -26,10 +26,6 @@ inputs:
     description: "Artifact suffix, useful if you run this action multiple times"
     required: false
     default: "unit"
-  enable-codecov:
-    description: "Set to true to upload coverage to Codecov from this test job"
-    required: false
-    default: "false"
   codecov-token:
     description: "Codecov token for private repos. Public repos can leave this empty."
     required: false
@@ -106,7 +102,7 @@ runs:
         paths: "**/test-results/**/*.xml"
 
     - name: "Upload coverage to Codecov"
-      if: ${{ !cancelled() && inputs.enable-codecov == 'true' }}
+      if: ${{ !cancelled() && inputs.codecov-token != '' }}
       uses: codecov/codecov-action@v5
       with:
         files: ${{ inputs.jacoco-xml-location }}
