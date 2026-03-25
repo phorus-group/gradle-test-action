@@ -110,7 +110,7 @@ runs:
         fail_ci_if_error: false
 
     - name: "Upload test artifacts"
-      uses: actions/upload-artifact@master
+      uses: actions/upload-artifact@v4
       with:
         name: gradle-tests-${{ inputs.artifact-suffix }}
         retention-days: 2
