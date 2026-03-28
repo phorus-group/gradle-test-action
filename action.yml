@@ -30,6 +30,14 @@ inputs:
     description: "Codecov token for private repos. Public repos can leave this empty."
     required: false
     default: ""
+  registry-username:
+    description: "Username for the Gradle dependency registry"
+    required: false
+    default: ""
+  registry-password:
+    description: "Password or token for the Gradle dependency registry"
+    required: false
+    default: ""
 outputs:
   total-lines:
     description: "Total lines to cover with tests"
@@ -59,6 +67,9 @@ runs:
     - name: "Run tests"
       id: test
       shell: bash
+      env:
+        ORG_GRADLE_PROJECT_readUsername: ${{ inputs.registry-username }}
+        ORG_GRADLE_PROJECT_readPassword: ${{ inputs.registry-password }}
       run: |
         ./gradlew --build-cache ${{ inputs.commands }}
 
