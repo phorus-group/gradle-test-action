@@ -118,6 +118,7 @@ runs:
       with:
         files: ${{ inputs.jacoco-xml-location }}
         token: ${{ inputs.codecov-token }}
+        disable_search: true
         fail_ci_if_error: false
 
     - name: "Upload test artifacts"
